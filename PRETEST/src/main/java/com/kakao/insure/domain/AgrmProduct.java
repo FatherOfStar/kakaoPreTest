@@ -45,7 +45,7 @@ public class AgrmProduct {
 	@Column
 	Long prdTotPrem;				// Product Total Premium
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "agrmProduct")
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "agrmProduct", orphanRemoval = true)
 	List<AgrmCoverage> agrmCoverages = new ArrayList<AgrmCoverage>();
 	
 	public void addAgrmCoverage(AgrmCoverage agrmagrmCoverage)

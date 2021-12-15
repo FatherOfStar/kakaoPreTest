@@ -29,7 +29,9 @@ class ProductServiceTest {
 
 	@BeforeEach
 	void setUp() throws Exception{
-		String[] tmpCovInformation = {"상해치료비,1000000,100","항공기 지연도착시 보상금,500000,1000"};
+		List<String> tmpCovInformation = new ArrayList<String>();
+		tmpCovInformation.add("상해치료비;1000000;100");
+		tmpCovInformation.add("항공기 지연도착시 보상금;500000;1000");
 		Product tmpProduct = productService.makeProduct("여행자 보험", 1, 3, tmpCovInformation );
 	}
 		
@@ -40,7 +42,9 @@ class ProductServiceTest {
 	void testMakeProduct() {
 		System.out.println("###########################################################");
 		System.out.println("###### 상품등록");
-		String[] tmpCovInformation = {"부분손실,750000,38","전체손실,1570000,40"};
+		List<String> tmpCovInformation = new ArrayList<String>();
+		tmpCovInformation.add("부분손실;750000;38");
+		tmpCovInformation.add("전체손실;1570000;40");
 		Product tmpProduct = productService.makeProduct("휴대폰 보험", 1, 12, tmpCovInformation );
 		System.out.println(tmpProduct.getPrdNm() + " 담보갯수 = " + tmpProduct.getCoverages().size());
 		System.out.println("###### 상품등록");
@@ -87,7 +91,9 @@ class ProductServiceTest {
 	void testAddCoverageTest() {
 		System.out.println("###########################################################");
 		System.out.println("###### 담보추가");
-		String[] tmpCovInformation = {"부분손실,750000,38","전체손실,1570000,40"};
+		List<String> tmpCovInformation = new ArrayList<String>();
+		tmpCovInformation.add("부분손실;750000;38");
+		tmpCovInformation.add("전체손실;1570000;40");
 		Product tmpProduct = productService.addCoverage("여행자 보험", tmpCovInformation );
 		System.out.println(tmpProduct.getPrdNm() + " 담보갯수 = " + tmpProduct.getCoverages().size());
 		System.out.println("###### 담보추가");

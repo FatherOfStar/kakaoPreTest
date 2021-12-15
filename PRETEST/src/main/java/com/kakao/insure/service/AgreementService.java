@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.dom4j.dom.DOMNodeHelper.EmptyNodeList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -89,6 +90,7 @@ public class AgreementService {
 	 * @param paramCovNmList
 	 * @return
 	 */
+	@Transactional
 	public Agreement makeAgreement(String paramPrcs, String paramPrdNm, String paramStartDt, String paramEndDt, List<String> paramCovNmList) {
 		Agreement tmpAgreement = new Agreement();
 		
@@ -165,6 +167,7 @@ public class AgreementService {
 	 * @param paramStatus
 	 * @return
 	 */
+	@Transactional
 	public Agreement modifyAgreement(String paramAgreementNo, String paramMdFlag, List<String> paramCovNmList, String paramEndDt, String paramStatus) {
 		if( null ==  paramAgreementNo || "".equals(paramAgreementNo) ) return null;
 		if( null ==  paramMdFlag || "".equals(paramMdFlag)  || "1234".indexOf(paramMdFlag) < 0) return null;
@@ -227,11 +230,20 @@ public class AgreementService {
 			List<String> addAgrmCov = new ArrayList<String>();
 			for(AgrmCoverage tmpAgrmCoverage : tmpAgrmCoverageList)
 			{
+				boolean isAddTarget = false;
 				for( String tmpCovNm : paramCovNmList)
-				if(! tmpCovNm.equals(tmpAgrmCoverage.getCovNm()) )
 				{
-					addAgrmCov.add(tmpAgrmCoverage.getCovNm());
+					if( tmpCovNm.equals(tmpAgrmCoverage.getCovNm()) )
+					{
+						isAddTarget = false;
+						break;
+					}else
+					{
+						isAddTarget = true;
+					}
 				}
+				if(isAddTarget) addAgrmCov.add(tmpAgrmCoverage.getCovNm());
+				
 			}
 			// 담보 초기화
 			tmpAgrmProduct.getAgrmCoverages().clear();
@@ -355,6 +367,10 @@ public class AgreementService {
 		return paramTerms * (paramInsAmt/paramStdAmt);
 	}
 	
+	/**
+	 * (현재 일 기준 ) 만기일이 15일 남은 계약 목록 Return
+	 * @return
+	 */
 	public List<Agreement> getExpirationNotice()
 	{
 		String tmpTargetDate = DateUtil.addYearMonthDay(DateUtil.getCurrentDate(),0,0,+15);

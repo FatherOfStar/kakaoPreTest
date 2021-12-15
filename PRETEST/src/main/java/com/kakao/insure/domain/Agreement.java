@@ -46,7 +46,7 @@ public class Agreement {
 	@Column
 	String agrmEndDt;				// agreement end date
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "agreement")
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "agreement", orphanRemoval = true)
 	List<AgrmProduct> agrmProducts = new ArrayList<AgrmProduct>();
 	
 	public void addAgrmProduct(AgrmProduct agrmProduct)

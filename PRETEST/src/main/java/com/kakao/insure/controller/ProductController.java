@@ -28,16 +28,59 @@ public class ProductController {
 		return "Hello";		
 	}
 	
-	
-	@RequestMapping("/createProduct")
-	public ResponseEntity<?> create(@RequestParam(value = "prdList") List<Product> paramProductList ){	
-		log.debug("Controller_Create_TEST");
-		List<Product> tmpProductList = new ArrayList<Product>();
-		for( Product tmpProduct : paramProductList) {		
-			tmpProductList.add(productService.createProduct(tmpProduct));
+	/**
+	 * 추가 API1 -1. 상품 생성 API
+	 * ex) http://localhost:8080/product/createProduct?prdNm=여행자 보험&minTerm=1&maxTerm=3&covInform=상해치료비;1000000;100,항공기 지연도착시 보상금;500000;1000
+	 * @param paramPrdNm
+	 * @param paramMinTerm
+	 * @param paramMaxTerm
+	 * @param paramCovInform
+	 * @return
+	 */
+	@RequestMapping("product/createProduct")
+	public ResponseEntity<?> create(@RequestParam(value = "prdNm") String paramPrdNm, 
+			@RequestParam(value = "minTerm") int paramMinTerm
+			, @RequestParam(value = "maxTerm") int paramMaxTerm
+			,@RequestParam(value="covInform") List <String> paramCovInform){	
+		
+		String[] tmpCovInformation = {"상해치료비,1000000,100","항공기 지연도착시 보상금,500000,1000"}; 
+		for(String covIn : paramCovInform)
+		{
+			System.out.println("########[" + covIn + "]############");
 		}
+		
+		Product tmpProduct = productService.makeProduct(paramPrdNm, paramMinTerm, paramMaxTerm, paramCovInform );
+		log.debug("Controller_Create_TEST");
+		String rtnMessage = null;
+		
+		if( tmpProduct == null ) rtnMessage = "Can Not Make Product!!";
+		else rtnMessage = "Make Success";
 				
-		return new ResponseEntity<>(tmpProductList , HttpStatus.OK);
+		return new ResponseEntity<>(rtnMessage , HttpStatus.OK);
 	}
 
+	/**
+	 * 추가 API1-2. 담보 추가 API
+	 * ex) http://localhost:8080/product/addCoverage?prdNm=여행자 보험&covInform=질병치료비;1000000;100
+	 * @param paramPrdNm
+	 * @param paramCovInform
+	 * @return
+	 */
+	@RequestMapping("product/addCoverage")
+	public ResponseEntity<?> addCoverage(@RequestParam(value = "prdNm") String paramPrdNm, 
+			@RequestParam(value="covInform") List <String> paramCovInform){	
+		
+		for(String covIn : paramCovInform)
+		{
+			System.out.println("########[" + covIn + "]############");
+		}
+		
+		Product tmpProduct = productService.addCoverage("여행자 보험",paramCovInform);
+		String rtnMessage = null;
+		
+		if( tmpProduct == null ) rtnMessage = "Can Not Add Coverage!!";
+		else rtnMessage = "Coverage Add Success";
+				
+		return new ResponseEntity<>(rtnMessage , HttpStatus.OK);
+	}
 }

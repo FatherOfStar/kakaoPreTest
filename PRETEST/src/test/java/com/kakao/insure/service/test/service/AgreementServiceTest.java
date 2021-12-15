@@ -38,11 +38,16 @@ class AgreementServiceTest{
 		
 		// 상품 등록
 		
-		String[] tmpCovInformation = {"부분손실,750000,38","전체손실,1570000,40"};
+		System.out.println("###### 상품등록");
+		List<String> tmpCovInformation = new ArrayList<String>();
+		tmpCovInformation.add("부분손실;750000;38");
+		tmpCovInformation.add("전체손실;1570000;40");
 		Product tmpProduct = productService.makeProduct("휴대폰 보험", 1, 12, tmpCovInformation );
 		
-		String[] tmpCovInformation2 = {"상해치료비,1000000,100","항공기 지연도착시 보상금,500000,1000"};
-		tmpProduct = productService.makeProduct("여행자 보험", 1, 3, tmpCovInformation2 );
+		tmpCovInformation = new ArrayList<String>();
+		tmpCovInformation.add("상해치료비;1000000;100");
+		tmpCovInformation.add("항공기 지연도착시 보상금;500000;1000");
+		tmpProduct = productService.makeProduct("여행자 보험", 1, 3, tmpCovInformation );
 		
 		// 계약 1개 생성
 		List<String> covNmList = new ArrayList<String>();

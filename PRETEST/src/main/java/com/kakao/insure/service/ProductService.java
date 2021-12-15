@@ -28,7 +28,7 @@ public class ProductService {
 	 * @return
 	 */
 	@Transactional
-	public Product makeProduct(String paramPrdNm, int paramMinTerm, int paramMaxTerm, String[] paramCovInforms){
+	public Product makeProduct(String paramPrdNm, int paramMinTerm, int paramMaxTerm, List<String> paramCovInforms){
 		Product tmpProduct = new Product();
 		tmpProduct.setPrdNm(paramPrdNm);
 		tmpProduct.setMinTerm(paramMinTerm);
@@ -36,7 +36,7 @@ public class ProductService {
 		
 		for(String tmpCovinform : paramCovInforms)
 		{
-			String[] tmpSplitStr = tmpCovinform.split(",");
+			String[] tmpSplitStr = tmpCovinform.split(";");
 			Coverage tmpCoverage = new Coverage();
 			tmpCoverage.setCovNm(tmpSplitStr[0]);
 			tmpCoverage.setCovInsAmt(Long.parseLong(tmpSplitStr[1]));
@@ -89,12 +89,12 @@ public class ProductService {
 	 * @return
 	 */
 	@Transactional
-	public Product addCoverage(String paramPrdNm, String[] paramCovInforms) {
+	public Product addCoverage(String paramPrdNm, List<String> paramCovInforms) {
 	 
 		 Product tmpProduct =  productRepository.findById(paramPrdNm).orElse(null);
 		 for(String tmpCovinform : paramCovInforms)
 			{
-				String[] tmpSplitStr = tmpCovinform.split(",");
+				String[] tmpSplitStr = tmpCovinform.split(";");
 				Coverage tmpCoverage = new Coverage();
 				tmpCoverage.setCovNm(tmpSplitStr[0]);
 				tmpCoverage.setCovInsAmt(Long.parseLong(tmpSplitStr[1]));
