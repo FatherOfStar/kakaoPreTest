@@ -222,7 +222,8 @@ public class AgreementController {
 			rtnMsg = "There no Expiration Agreement";
 		}
 		else {
-			rtnMsg = "There are Expiration Agreement after 15Days.";
+			rtnMsg = "There are Expiration Agreement after 7Days.";
+			rtnMsg = rtnMsg + "\n";
 			for(Agreement tmpAgreement : tmpAgreementList)
 			{
 				rtnMsg = rtnMsg + "계약번호 : [" + tmpAgreement.getAgrmNo()+"], 상품명 : [ "+ tmpAgreement.getAgrmProducts().get(0).getPrdNm()+ "], 총 가입금액 : [" + tmpAgreement.getAgrmProducts().get(0).getPrdTotAmt() + "], 총 보험료 : [" + tmpAgreement.getTotPrem()+"]";

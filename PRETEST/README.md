@@ -24,7 +24,7 @@
  4. Build
  5. Run Spring Boot
  
- ## 참고사항
+## 참고사항
  - 계약기간은 월단위로 관리합니다.
  - 계약자, 피보험자에 대한 사항은 별도로 관리하지 않습니다.
  - 보험료의 수납에 대한 사항은 별도로 관리하지 않습니다.
@@ -32,7 +32,11 @@
  - 가입시 가입금액은 담보별로 고정되어 있습니다.
  - 기간만료 상태의 계약은 계약 변경 업무가 불가능 합니다.
  
- ## 도메인 (ENTITY)
+## 테스트 환경
+ - UnitTest - junit
+ - URLTest - PostMan
+ 
+## 도메인 (ENTITY)
  - PRODUCT ( 상품 테이블 ) - 상품 정보
    PRD_NM ( 상품명 ) - PK
    MAX_TERM ( 최대보험기간 )
@@ -71,7 +75,7 @@
      T_DATE ( 일자 )  - PK
      AGRM_NO( 일자별 채번 )
         
- ## Source 목록
+## Source 목록
 ### Controller
 - Agreementontroller.java
 - ProductController.java 
@@ -257,5 +261,9 @@ Contract modify is succed
  - Controller Method 명 :getExpirationAgreement()
  - Service 명 : agreementService.getExpirationNotice
  - Unit Test : expirationNoticeTest
- - TestURL : 
+ - TestURL : http://localhost:8080/agreement/expireAgrm
  - 출력 예시
+ There are Expiration Agreement after 7Days.
+ 계약번호 : [2021121500003], 상품명 : [ 여행자 보험], 총 가입금액 : [1500000], 총 보험료 : [11501.50]
+계약번호 : [2021121500004], 상품명 : [ 여행자 보험], 총 가입금액 : [1500000], 총 보험료 : [11501.50]
+계약번호 : [2021121500005], 상품명 : [ 여행자 보험], 총 가입금액 : [500000], 총 보험료 : [1501.50]
