@@ -9,18 +9,12 @@ import java.util.Locale;
 public class localTest {
 
 	public static void main(String[] args) throws Exception {
-		String sDate = "20210101";
-		String eDate = "20210201";
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
-		
-		Date startDate = sdf.parse(sDate);
-		Date endDate = sdf.parse(eDate);
-		System.out.println(startDate);
-		System.out.println(endDate);
-		System.out.println(endDate.after(startDate));
-		System.out.println(startDate.equals(endDate));
-		
-		
+		System.out.println("1,2,3,4,5".indexOf("1"));
+		System.out.println("1,2,3,4,5".indexOf("2"));
+		System.out.println("1,2,3,4,5".indexOf("3"));
+		System.out.println("1,2,3,4,5".indexOf("4"));
+		System.out.println("1,2,3,4,5".indexOf("5"));
+		System.out.println("1,2,3,4,5".indexOf("9"));
 	}
 	
 	public static String addYearMonthDay(String sDate, int year, int month, int day) {

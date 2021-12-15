@@ -29,7 +29,6 @@ import lombok.Setter;
 public class Agreement {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	Long agrmNo;						// agreement No
 	
 	@Column

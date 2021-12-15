@@ -14,8 +14,6 @@ import com.kakao.insure.domain.AgrmProduct;
 import com.kakao.insure.domain.Coverage;
 import com.kakao.insure.domain.Product;
 import com.kakao.insure.repository.AgreementRepository;
-import com.kakao.insure.repository.AgrmProductRepository;
-import com.kakao.insure.repository.AgrmCoverageRepository;
 import com.kakao.insure.util.DateUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -25,10 +23,10 @@ import lombok.RequiredArgsConstructor;
 public class AgreementService {
 	
 	private final AgreementRepository agreementRepository;
-	private final AgrmProductRepository agrmProductRepository;
-	private final AgrmCoverageRepository agrmCoverageRepository;
 	@Autowired
 	ProductService productService;
+	@Autowired
+	AgreementNoService agreementNoService;
 	/**
 	 * 계약을 저장하는 Service
 	 * @param product
@@ -37,6 +35,10 @@ public class AgreementService {
 	@Transactional
 	public Agreement createAgreement(Agreement paramAgreement){
 
+		if( null ==  paramAgreement.getAgrmNo() )
+		{
+			paramAgreement.setAgrmNo(Long.parseLong(agreementNoService.createAgreement()));
+		}
 		Agreement tmpAgreement = agreementRepository.save(paramAgreement);	
 						
 		return tmpAgreement;
@@ -115,8 +117,8 @@ public class AgreementService {
 		tmpAgrmProduct.setPrdNm(paramPrdNm);
 		Long tmpTotPrem = 0L;
 		Long tmpTotInsAmt = 0L;
+		
 		//agrmCov 세팅
-		List<AgrmCoverage> tmpAgrmCoverageList = new ArrayList<AgrmCoverage>();
 		for(String tmpCovNm : paramCovNmList )
 		{
 			AgrmCoverage tmpAgrmCoverage = new AgrmCoverage();
@@ -137,7 +139,6 @@ public class AgreementService {
 						tmpTotPrem += tmpCovPrem;
 						tmpTotInsAmt += tmpCovInsAmt;
 						
-						tmpAgrmCoverage.setAgrmProduct(tmpAgrmProduct);
 						tmpAgrmProduct.addAgrmCoverage(tmpAgrmCoverage);
 					}
 				}
@@ -155,9 +156,210 @@ public class AgreementService {
 		
 	}
 	
+	/**
+	 * 
+	 * @param paramMdFlag (1 : 담보 추가, 2 : 담보 삭제, 3 : EndDate 변경, 4 : 보험상태 변경 )
+	 * @param paramAgreementNo
+	 * @param paramCovList
+	 * @param paramEndDt
+	 * @param paramStatus
+	 * @return
+	 */
+	public Agreement modifyAgreement(String paramAgreementNo, String paramMdFlag, List<String> paramCovNmList, String paramEndDt, String paramStatus) {
+		if( null ==  paramAgreementNo || "".equals(paramAgreementNo) ) return null;
+		if( null ==  paramMdFlag || "".equals(paramMdFlag)  || "1234".indexOf(paramMdFlag) < 0) return null;
+		
+		
+		Agreement tmpAgreement = this.selectAgreement(Long.parseLong(paramAgreementNo));
+		if( null ==  tmpAgreement ) return null;
+		
+		if( "기간만료".equals(tmpAgreement.getAgrmStat())) return null;
+		
+		AgrmProduct tmpAgrmProduct = tmpAgreement.getAgrmProducts().get(0);
+		String tmpProductNm = tmpAgreement.getAgrmProducts().get(0).getPrdNm();
+		Product tmpProduct = productService.selectProduct(tmpProductNm);
+		List<Coverage> tmpCoverageList = tmpProduct.getCoverages();
+		int tmpAgrmTerm = tmpAgreement.getContTerm();
+		int tmpMinTerm = tmpProduct.getMinTerm();
+		int tmpMaxTerm = tmpProduct.getMaxTerm();
+		if ( "1".equals(paramMdFlag))
+		{// Add Coverage
+			//agrmCov 세팅
+			Long addCovPrem = 0L;
+			Long addCovInsAmt = 0L;
+			
+			for(String tmpCovNm : paramCovNmList )
+			{
+				AgrmCoverage tmpAgrmCoverage = new AgrmCoverage();
+				for(Coverage tmpCoverage : tmpCoverageList)
+				{
+					if( null != tmpCoverage )
+					{
+						if( tmpCovNm.equals(tmpCoverage.getCovNm()) )
+						{
+							tmpAgrmCoverage.setCovNm(tmpCovNm);
+							Long tmpCovInsAmt = tmpCoverage.getCovInsAmt();
+							Long tmpStdAmt = tmpCoverage.getCovStdAmt();
+							tmpAgrmCoverage.setCovInsAmt(tmpCovInsAmt);
+							tmpAgrmCoverage.setCovStdAmt(tmpStdAmt);
+							Long tmpCovPrem = this.caculCovPrem(tmpAgrmTerm, tmpCovInsAmt, tmpStdAmt);
+							tmpAgrmCoverage.setCovPrem(tmpCovPrem);
+							addCovPrem = addCovPrem + tmpCovPrem;
+							addCovInsAmt = addCovInsAmt + tmpCovInsAmt;
+							
+							tmpAgrmProduct.addAgrmCoverage(tmpAgrmCoverage);
+						}
+					}
+				}
+			}
+			tmpAgrmProduct.setPrdTotAmt(tmpAgrmProduct.getPrdTotAmt() + addCovInsAmt);
+			tmpAgrmProduct.setPrdTotPrem(tmpAgrmProduct.getPrdTotPrem() + addCovPrem);
+			
+			tmpAgreement.setTotPrem(tmpAgreement.getTotPrem()+addCovPrem);
+			
+			return tmpAgreement;
+		}
+		else if( "2".equals(paramMdFlag) )
+		{// delete Coverage
+			List<AgrmCoverage> tmpAgrmCoverageList = tmpAgrmProduct.getAgrmCoverages();
+			Long addCovPrem = 0L;
+			Long addCovInsAmt = 0L;
+			List<String> addAgrmCov = new ArrayList<String>();
+			for(AgrmCoverage tmpAgrmCoverage : tmpAgrmCoverageList)
+			{
+				for( String tmpCovNm : paramCovNmList)
+				if(! tmpCovNm.equals(tmpAgrmCoverage.getCovNm()) )
+				{
+					addAgrmCov.add(tmpAgrmCoverage.getCovNm());
+				}
+			}
+			// 담보 초기화
+			tmpAgrmProduct.getAgrmCoverages().clear();
+			
+			// 담보 새로 담기
+			for(String tmpCovNm : addAgrmCov )
+			{
+				AgrmCoverage tmpAgrmCoverage = new AgrmCoverage();
+				for(Coverage tmpCoverage : tmpCoverageList)
+				{
+					if( null != tmpCoverage )
+					{
+						if( tmpCovNm.equals(tmpCoverage.getCovNm()) )
+						{
+							tmpAgrmCoverage.setCovNm(tmpCovNm);
+							Long tmpCovInsAmt = tmpCoverage.getCovInsAmt();
+							Long tmpStdAmt = tmpCoverage.getCovStdAmt();
+							tmpAgrmCoverage.setCovInsAmt(tmpCovInsAmt);
+							tmpAgrmCoverage.setCovStdAmt(tmpStdAmt);
+							Long tmpCovPrem = this.caculCovPrem(tmpAgrmTerm, tmpCovInsAmt, tmpStdAmt);
+							tmpAgrmCoverage.setCovPrem(tmpCovPrem);
+							addCovPrem = addCovPrem + tmpCovPrem;
+							addCovInsAmt = addCovInsAmt + tmpCovInsAmt;
+							
+							tmpAgrmProduct.addAgrmCoverage(tmpAgrmCoverage);
+						}
+					}
+				}
+		}
+		tmpAgrmProduct.setPrdTotAmt( addCovInsAmt);
+		tmpAgrmProduct.setPrdTotPrem( addCovPrem);
+		
+		tmpAgreement.setTotPrem(addCovPrem);
+		
+		return tmpAgreement;
+		}
+		else if( "3".equals(paramMdFlag) )
+		{// Modify EndDt
+			if(DateUtil.isMore(paramEndDt, DateUtil.getCurrentDate()))
+				tmpAgreement.setAgrmStat("기간만료");
+			else 
+				tmpAgreement.setAgrmStat("정상계약");
+			String tmpStartDt = tmpAgreement.getAgrmStartDt();
+			tmpAgreement.setAgrmEndDt(paramEndDt);
+			int newTmpAgrmTerm = DateUtil.diffMonth(tmpStartDt, paramEndDt);
+			if( newTmpAgrmTerm < tmpMinTerm  || newTmpAgrmTerm > tmpMaxTerm ) return null;
+			tmpAgreement.setContTerm(newTmpAgrmTerm);
+			
+			// Coverage Name List Up
+			List<String> tmpCoverageNmList = new ArrayList<String>();
+			List<AgrmCoverage> coverageList = tmpAgrmProduct.getAgrmCoverages();
+			for( AgrmCoverage tmpAgrmCoverage : coverageList )
+			{
+				tmpCoverageNmList.add(tmpAgrmCoverage.getCovNm());
+			}
+			
+			// 상품 초기화
+			tmpAgreement.getAgrmProducts().clear();
+			 
+			// 상품 재 새팅
+			// agrmPrd 세팅
+			AgrmProduct tmpNewAgrmProduct = new AgrmProduct();
+			
+			tmpNewAgrmProduct.setPrdNm(tmpProduct.getPrdNm());
+			
+			Long tmpTotPrem = 0L;
+			Long tmpTotInsAmt = 0L;
+			
+			//agrmCov 세팅
+			for(String tmpCovNm : tmpCoverageNmList )
+			{
+				AgrmCoverage tmpAgrmCoverage = new AgrmCoverage();
+				for(Coverage tmpCoverage : tmpCoverageList)
+				{
+					if( null != tmpCoverage )
+					{
+						if( tmpCovNm.equals(tmpCoverage.getCovNm()) )
+						{
+							tmpAgrmCoverage.setCovNm(tmpCovNm);
+							Long tmpCovInsAmt = tmpCoverage.getCovInsAmt();
+							Long tmpStdAmt = tmpCoverage.getCovStdAmt();
+							tmpAgrmCoverage.setCovInsAmt(tmpCovInsAmt);
+							tmpAgrmCoverage.setCovStdAmt(tmpStdAmt);
+							Long tmpCovPrem = this.caculCovPrem(newTmpAgrmTerm, tmpCovInsAmt, tmpStdAmt);
+							tmpAgrmCoverage.setCovPrem(tmpCovPrem);
+							
+							tmpTotPrem += tmpCovPrem;
+							tmpTotInsAmt += tmpCovInsAmt;
+							
+							tmpNewAgrmProduct.addAgrmCoverage(tmpAgrmCoverage);
+						}
+					}
+				}
+			}
+			tmpNewAgrmProduct.setPrdTotAmt(tmpTotInsAmt);
+			tmpNewAgrmProduct.setPrdTotPrem(tmpTotPrem);		
+			tmpAgreement.addAgrmProduct(tmpNewAgrmProduct);
+			
+			tmpAgreement.setTotPrem(tmpTotPrem);
+			return tmpAgreement;
+			
+		}
+		else if( "4".equals(paramMdFlag) )
+		{// Modify Status
+			tmpAgreement.setAgrmStat(paramStatus);
+			return tmpAgreement;
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * 보험료 계산
+	 * @param paramTerms
+	 * @param paramInsAmt
+	 * @param paramStdAmt
+	 * @return
+	 */
 	public Long caculCovPrem(int paramTerms, Long paramInsAmt, Long paramStdAmt)
 	{
 		return paramTerms * (paramInsAmt/paramStdAmt);
 	}
 	
+	public List<Agreement> getExpirationNotice()
+	{
+		String tmpTargetDate = DateUtil.addYearMonthDay(DateUtil.getCurrentDate(),0,0,+15);
+		List<Agreement> tmpAgreementList = agreementRepository.getExpireexpirationAgreement(tmpTargetDate);
+		return tmpAgreementList;
+	}
+		
 }
