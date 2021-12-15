@@ -1,5 +1,6 @@
 package com.kakao.insure.domain;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class AgrmProduct {
 	Long prdTotAmt;				// Product Total Amount
 	
 	@Column
-	Long prdTotPrem;				// Product Total Premium
+	BigDecimal prdTotPrem;				// Product Total Premium
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "agrmProduct", orphanRemoval = true)
 	List<AgrmCoverage> agrmCoverages = new ArrayList<AgrmCoverage>();

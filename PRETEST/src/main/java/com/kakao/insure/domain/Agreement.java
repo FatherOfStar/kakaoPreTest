@@ -1,5 +1,6 @@
 package com.kakao.insure.domain;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -38,7 +39,7 @@ public class Agreement {
 	String agrmStat;					// agreement status
 	
 	@Column
-	Long totPrem;						// total premium
+	BigDecimal totPrem;						// total premium
 	
 	@Column
 	String agrmStartDt;			// agreement start date

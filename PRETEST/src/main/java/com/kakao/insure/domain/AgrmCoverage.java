@@ -1,5 +1,7 @@
 package com.kakao.insure.domain;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -41,7 +43,7 @@ public class AgrmCoverage {
 	Long covStdAmt;				//Coverage standard amount
 	
 	@Column
-	Long covPrem;					// coverage premium
+	BigDecimal covPrem;					// coverage premium
 	
 
 }

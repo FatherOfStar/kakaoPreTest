@@ -185,25 +185,25 @@ class AgreementServiceTest{
 				List<String> tmpCovNmList = new ArrayList<String>();
 				tmpCovNmList.add("상해치료비");
 				tmpCovNmList.add("항공기 지연도착시 보상금");
-				agreementService.makeAgreement("A","여행자 보험", "20211220", "20211230", tmpCovNmList);
+				agreementService.makeAgreement("A","여행자 보험", "20211220", "20211222", tmpCovNmList);
 				
 				// 계약 1개 생성
 				tmpCovNmList = new ArrayList<String>();
 				tmpCovNmList.add("상해치료비");
 				tmpCovNmList.add("항공기 지연도착시 보상금");
-				agreementService.makeAgreement("A","여행자 보험", "20211220", "20211230", tmpCovNmList);
+				agreementService.makeAgreement("A","여행자 보험", "20211220", "20211222", tmpCovNmList);
 				
 				// 계약 1개 생성
 				tmpCovNmList = new ArrayList<String>();
 				tmpCovNmList.add("상해치료비");
 				tmpCovNmList.add("항공기 지연도착시 보상금");
-				agreementService.makeAgreement("A","여행자 보험", "20211220", "20211229", tmpCovNmList);
+				agreementService.makeAgreement("A","여행자 보험", "20211220", "20211222", tmpCovNmList);
 				
 				// 계약 1개 생성
 				tmpCovNmList = new ArrayList<String>();
 				tmpCovNmList.add("상해치료비");
 				tmpCovNmList.add("항공기 지연도착시 보상금");
-				agreementService.makeAgreement("A","여행자 보험", "20211220", "20211231", tmpCovNmList);
+				agreementService.makeAgreement("A","여행자 보험", "20211220", "20211223", tmpCovNmList);
 				
 				// 전체 계약 확인
 				List<Agreement> tmpAgreements = agreementService.selectAgreementAll();
@@ -215,7 +215,7 @@ class AgreementServiceTest{
 				System.out.println("#################################################");
 				 
 				 List<Agreement> tmpAgreementList = agreementService.getExpirationNotice();
-				 System.out.println("##### 만기도래 전(15일 전) 안내 입니다. 아래 계약 확인하세요. #####");
+				 System.out.println("##### 만기도래 전(7일 전) 안내 입니다. 아래 계약 확인하세요. #####");
 				 for(Agreement tmpAgreement  : tmpAgreementList )
 				 {
 					System.out.println("##### 계약번호 : [" + tmpAgreement.getAgrmNo() + "], 상품명 : [" + tmpAgreement.getAgrmProducts().get(0).getPrdNm() + "], 보험료 : [" + tmpAgreement.getTotPrem() + "]"); 

@@ -1,5 +1,7 @@
 package com.kakao.insure.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -117,7 +119,7 @@ public class AgreementService {
 		AgrmProduct tmpAgrmProduct = new AgrmProduct();
 		
 		tmpAgrmProduct.setPrdNm(paramPrdNm);
-		Long tmpTotPrem = 0L;
+		BigDecimal tmpTotPrem = BigDecimal.ZERO;
 		Long tmpTotInsAmt = 0L;
 		
 		//agrmCov 세팅
@@ -135,10 +137,10 @@ public class AgreementService {
 						Long tmpStdAmt = tmpCoverage.getCovStdAmt();
 						tmpAgrmCoverage.setCovInsAmt(tmpCovInsAmt);
 						tmpAgrmCoverage.setCovStdAmt(tmpStdAmt);
-						Long tmpCovPrem = this.caculCovPrem(tmpAgrmTerm, tmpCovInsAmt, tmpStdAmt);
+						BigDecimal tmpCovPrem = this.caculCovPrem(tmpAgrmTerm, tmpCovInsAmt, tmpStdAmt);
 						tmpAgrmCoverage.setCovPrem(tmpCovPrem);
 						
-						tmpTotPrem += tmpCovPrem;
+						tmpTotPrem = tmpTotPrem.add(tmpCovPrem);
 						tmpTotInsAmt += tmpCovInsAmt;
 						
 						tmpAgrmProduct.addAgrmCoverage(tmpAgrmCoverage);
@@ -188,7 +190,7 @@ public class AgreementService {
 		if ( "1".equals(paramMdFlag))
 		{// Add Coverage
 			//agrmCov 세팅
-			Long addCovPrem = 0L;
+			BigDecimal addCovPrem = BigDecimal.ZERO;
 			Long addCovInsAmt = 0L;
 			
 			for(String tmpCovNm : paramCovNmList )
@@ -205,9 +207,9 @@ public class AgreementService {
 							Long tmpStdAmt = tmpCoverage.getCovStdAmt();
 							tmpAgrmCoverage.setCovInsAmt(tmpCovInsAmt);
 							tmpAgrmCoverage.setCovStdAmt(tmpStdAmt);
-							Long tmpCovPrem = this.caculCovPrem(tmpAgrmTerm, tmpCovInsAmt, tmpStdAmt);
+							BigDecimal tmpCovPrem = this.caculCovPrem(tmpAgrmTerm, tmpCovInsAmt, tmpStdAmt);
 							tmpAgrmCoverage.setCovPrem(tmpCovPrem);
-							addCovPrem = addCovPrem + tmpCovPrem;
+							addCovPrem = addCovPrem.add(tmpCovPrem) ;
 							addCovInsAmt = addCovInsAmt + tmpCovInsAmt;
 							
 							tmpAgrmProduct.addAgrmCoverage(tmpAgrmCoverage);
@@ -216,16 +218,16 @@ public class AgreementService {
 				}
 			}
 			tmpAgrmProduct.setPrdTotAmt(tmpAgrmProduct.getPrdTotAmt() + addCovInsAmt);
-			tmpAgrmProduct.setPrdTotPrem(tmpAgrmProduct.getPrdTotPrem() + addCovPrem);
+			tmpAgrmProduct.setPrdTotPrem(tmpAgrmProduct.getPrdTotPrem().add(addCovPrem));
 			
-			tmpAgreement.setTotPrem(tmpAgreement.getTotPrem()+addCovPrem);
+			tmpAgreement.setTotPrem(tmpAgreement.getTotPrem().add(addCovPrem));
 			
 			return tmpAgreement;
 		}
 		else if( "2".equals(paramMdFlag) )
 		{// delete Coverage
 			List<AgrmCoverage> tmpAgrmCoverageList = tmpAgrmProduct.getAgrmCoverages();
-			Long addCovPrem = 0L;
+			BigDecimal addCovPrem = BigDecimal.ZERO;
 			Long addCovInsAmt = 0L;
 			List<String> addAgrmCov = new ArrayList<String>();
 			for(AgrmCoverage tmpAgrmCoverage : tmpAgrmCoverageList)
@@ -263,9 +265,9 @@ public class AgreementService {
 							Long tmpStdAmt = tmpCoverage.getCovStdAmt();
 							tmpAgrmCoverage.setCovInsAmt(tmpCovInsAmt);
 							tmpAgrmCoverage.setCovStdAmt(tmpStdAmt);
-							Long tmpCovPrem = this.caculCovPrem(tmpAgrmTerm, tmpCovInsAmt, tmpStdAmt);
+							BigDecimal tmpCovPrem = this.caculCovPrem(tmpAgrmTerm, tmpCovInsAmt, tmpStdAmt);
 							tmpAgrmCoverage.setCovPrem(tmpCovPrem);
-							addCovPrem = addCovPrem + tmpCovPrem;
+							addCovPrem = addCovPrem.add(tmpCovPrem);
 							addCovInsAmt = addCovInsAmt + tmpCovInsAmt;
 							
 							tmpAgrmProduct.addAgrmCoverage(tmpAgrmCoverage);
@@ -309,7 +311,7 @@ public class AgreementService {
 			
 			tmpNewAgrmProduct.setPrdNm(tmpProduct.getPrdNm());
 			
-			Long tmpTotPrem = 0L;
+			BigDecimal tmpTotPrem = BigDecimal.ZERO;
 			Long tmpTotInsAmt = 0L;
 			
 			//agrmCov 세팅
@@ -327,10 +329,10 @@ public class AgreementService {
 							Long tmpStdAmt = tmpCoverage.getCovStdAmt();
 							tmpAgrmCoverage.setCovInsAmt(tmpCovInsAmt);
 							tmpAgrmCoverage.setCovStdAmt(tmpStdAmt);
-							Long tmpCovPrem = this.caculCovPrem(newTmpAgrmTerm, tmpCovInsAmt, tmpStdAmt);
+							BigDecimal tmpCovPrem = this.caculCovPrem(newTmpAgrmTerm, tmpCovInsAmt, tmpStdAmt);
 							tmpAgrmCoverage.setCovPrem(tmpCovPrem);
 							
-							tmpTotPrem += tmpCovPrem;
+							tmpTotPrem = tmpTotPrem.add(tmpCovPrem);
 							tmpTotInsAmt += tmpCovInsAmt;
 							
 							tmpNewAgrmProduct.addAgrmCoverage(tmpAgrmCoverage);
@@ -362,18 +364,24 @@ public class AgreementService {
 	 * @param paramStdAmt
 	 * @return
 	 */
-	public Long caculCovPrem(int paramTerms, Long paramInsAmt, Long paramStdAmt)
+	public BigDecimal caculCovPrem(int paramTerms, Long paramInsAmt, Long paramStdAmt)
 	{
-		return paramTerms * (paramInsAmt/paramStdAmt);
+		BigDecimal tmpTerms  = BigDecimal.valueOf(paramTerms);
+		BigDecimal tmpInsAmt = BigDecimal.valueOf(paramInsAmt);
+		BigDecimal tmpStdAmt = BigDecimal.valueOf(paramStdAmt);
+		System.out.println(tmpTerms + " , " + tmpInsAmt + ", " + tmpStdAmt);
+		BigDecimal rtnPrem = tmpTerms.multiply(tmpInsAmt.divide(tmpStdAmt,4,RoundingMode.DOWN));
+		rtnPrem = rtnPrem.setScale(2,RoundingMode.DOWN);
+		return rtnPrem;
 	}
 	
 	/**
-	 * (현재 일 기준 ) 만기일이 15일 남은 계약 목록 Return
+	 * (현재 일 기준 ) 만기일이 7일 남은 계약 목록 Return
 	 * @return
 	 */
 	public List<Agreement> getExpirationNotice()
 	{
-		String tmpTargetDate = DateUtil.addYearMonthDay(DateUtil.getCurrentDate(),0,0,+15);
+		String tmpTargetDate = DateUtil.addYearMonthDay(DateUtil.getCurrentDate(),0,0,+7);
 		List<Agreement> tmpAgreementList = agreementRepository.getExpireexpirationAgreement(tmpTargetDate);
 		return tmpAgreementList;
 	}

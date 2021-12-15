@@ -75,7 +75,7 @@ public class ProductController {
 			System.out.println("########[" + covIn + "]############");
 		}
 		
-		Product tmpProduct = productService.addCoverage("여행자 보험",paramCovInform);
+		Product tmpProduct = productService.addCoverage(paramPrdNm,paramCovInform);
 		String rtnMessage = null;
 		
 		if( tmpProduct == null ) rtnMessage = "Can Not Add Coverage!!";

@@ -82,7 +82,7 @@ public class AgreementController {
 	}
 	
 	/**
-	 * API2-2. 계약 조회( 계약번호로 특정계약 조회 ) API
+	 * API2. 계약 조회( 계약번호로 특정계약 조회 ) API
 	 * http://localhost:8080/agreement/findContract?agrmNo=2021121500004 
 	 * @param paramAgrmNo
 	 * @return
@@ -166,7 +166,7 @@ public class AgreementController {
 	}
 	
 	/**
-	 *  API3. 단순보험료계산
+	 *  API4. 예상 총 보험료 계산 API
 	 *  ex) http://localhost:8080/agreement/simpleCal?prdNm=여행자 보험&startDt=20211203&endDt=20211230&covNmLIst=상해치료비, 항공기 지연도착시 보상금, 질병치료비
 	 * @param paramPrdNm
 	 * @param paramStartDt
@@ -210,7 +210,7 @@ public class AgreementController {
 	
 	/**
 	 * 추가API2. 안내장 발송 기능
-	 *   - 현재일 기준 15일 이후 종료일인 계약 List 를 조회 후 안내 한다.
+	 *   - 현재일 기준 7일 이후 종료일인 계약 List 를 조회 후 안내 한다.
 	 * @return
 	 */
 	@RequestMapping("agreement/expireAgrm")
