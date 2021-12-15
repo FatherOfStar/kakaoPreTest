@@ -208,6 +208,11 @@ public class AgreementController {
 		return new ResponseEntity<>(rtnMsg , HttpStatus.OK);
 	}
 	
+	/**
+	 * 추가API2. 안내장 발송 기능
+	 *   - 현재일 기준 15일 이후 종료일인 계약 List 를 조회 후 안내 한다.
+	 * @return
+	 */
 	@RequestMapping("agreement/expireAgrm")
 	public ResponseEntity<?> getExpirationAgreement(){
 		List<Agreement> tmpAgreementList = agreementService.getExpirationNotice();
