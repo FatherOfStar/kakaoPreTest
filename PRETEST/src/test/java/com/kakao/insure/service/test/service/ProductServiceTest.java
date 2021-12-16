@@ -1,7 +1,5 @@
 package com.kakao.insure.service.test.service;
 
-import static org.junit.jupiter.api.Assertions.fail;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,16 +10,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.kakao.insure.controller.ProductController;
-import com.kakao.insure.domain.Coverage;
 import com.kakao.insure.domain.Product;
 import com.kakao.insure.service.ProductService;
 
-import lombok.extern.slf4j.Slf4j;
-
 @SpringBootTest
 @Transactional
-@Slf4j
 class ProductServiceTest {
 
 	@Autowired
@@ -32,7 +25,7 @@ class ProductServiceTest {
 		List<String> tmpCovInformation = new ArrayList<String>();
 		tmpCovInformation.add("상해치료비;1000000;100");
 		tmpCovInformation.add("항공기 지연도착시 보상금;500000;1000");
-		Product tmpProduct = productService.makeProduct("여행자 보험", 1, 3, tmpCovInformation );
+		productService.makeProduct("여행자 보험", 1, 3, tmpCovInformation );
 	}
 		
 	/**

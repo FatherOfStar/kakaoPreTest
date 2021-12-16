@@ -7,7 +7,6 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
-import org.dom4j.dom.DOMNodeHelper.EmptyNodeList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -369,9 +368,7 @@ public class AgreementService {
 		BigDecimal tmpTerms  = BigDecimal.valueOf(paramTerms);
 		BigDecimal tmpInsAmt = BigDecimal.valueOf(paramInsAmt);
 		BigDecimal tmpStdAmt = BigDecimal.valueOf(paramStdAmt);
-		System.out.println(tmpTerms + " , " + tmpInsAmt + ", " + tmpStdAmt);
-		BigDecimal rtnPrem = tmpTerms.multiply(tmpInsAmt.divide(tmpStdAmt,4,RoundingMode.DOWN));
-		rtnPrem = rtnPrem.setScale(2,RoundingMode.DOWN);
+		BigDecimal rtnPrem = tmpTerms.multiply(tmpInsAmt).divide(tmpStdAmt,2,RoundingMode.DOWN);
 		return rtnPrem;
 	}
 	

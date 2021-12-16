@@ -1,22 +1,13 @@
 package com.kakao.insure.service.test.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.transaction.Transactional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 
-import com.kakao.insure.domain.Agreement;
-import com.kakao.insure.domain.AgreementNo;
-import com.kakao.insure.domain.Product;
 import com.kakao.insure.service.AgreementNoService;
-import com.kakao.insure.service.AgreementService;
-import com.kakao.insure.service.ProductService;
 
 
 @SpringBootTest

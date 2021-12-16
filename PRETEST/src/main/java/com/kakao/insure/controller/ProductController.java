@@ -1,6 +1,5 @@
 package com.kakao.insure.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +42,6 @@ public class ProductController {
 			, @RequestParam(value = "maxTerm") int paramMaxTerm
 			,@RequestParam(value="covInform") List <String> paramCovInform){	
 		
-		String[] tmpCovInformation = {"상해치료비,1000000,100","항공기 지연도착시 보상금,500000,1000"}; 
 		for(String covIn : paramCovInform)
 		{
 			System.out.println("########[" + covIn + "]############");

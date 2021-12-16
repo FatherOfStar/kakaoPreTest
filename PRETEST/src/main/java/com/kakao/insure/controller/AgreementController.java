@@ -49,7 +49,7 @@ public class AgreementController {
 		{
 			rtnMsg = "Contract making is succed";
 			rtnMsg = rtnMsg+"\n";
-			rtnMsg = rtnMsg + "계약번호 : [" + tmpAgreement.getAgrmNo() + "], 총 보험료[" + tmpAgreement.getTotPrem() + "원], 보험시작일 : [" + tmpAgreement.getAgrmStartDt() + "], 보험종료일 : [" + tmpAgreement.getAgrmEndDt() + "";
+			rtnMsg = rtnMsg + "계약번호 : [" + tmpAgreement.getAgrmNo() + "], 총 보험료[" + tmpAgreement.getTotPrem() + "원], 보험시작일 : [" + tmpAgreement.getAgrmStartDt() + "], 보험종료일 : [" + tmpAgreement.getAgrmEndDt() + "]";
 			rtnMsg = rtnMsg + "\n";
 			rtnMsg = rtnMsg +"상품명 : [ "+ tmpAgreement.getAgrmProducts().get(0).getPrdNm()+ "], 계약상태 : [" + tmpAgreement.getAgrmStat()+"], 계약기간 : [" + tmpAgreement.getContTerm() + "]";
 			rtnMsg = rtnMsg + "\n";
@@ -100,13 +100,14 @@ public class AgreementController {
 		{
 			rtnMsg = "Search agreements is succed";
 			rtnMsg = rtnMsg+"\n";
-			rtnMsg = rtnMsg + "계약번호 : [" + tmpAgreement.getAgrmNo() + "], 총 보험료[" + tmpAgreement.getTotPrem() + "원], 보험시작일 : [" + tmpAgreement.getAgrmStartDt() + "], 보험종료일 : [" + tmpAgreement.getAgrmEndDt() + "";
+			rtnMsg = rtnMsg + "계약번호 : [" + tmpAgreement.getAgrmNo() + "], 총 보험료[" + tmpAgreement.getTotPrem() + "원], 보험시작일 : [" + tmpAgreement.getAgrmStartDt() + "], 보험종료일 : [" + tmpAgreement.getAgrmEndDt() + "]";
 			rtnMsg = rtnMsg + "\n";
 			rtnMsg = rtnMsg +"상품명 : [ "+ tmpAgreement.getAgrmProducts().get(0).getPrdNm()+ "], 계약상태 : [" + tmpAgreement.getAgrmStat()+"], 계약기간 : [" + tmpAgreement.getContTerm() + "]";
 			rtnMsg = rtnMsg + "\n";
 			for( AgrmCoverage tmpAgrmCoverage :  tmpAgreement.getAgrmProducts().get(0).getAgrmCoverages())
 			{
 				rtnMsg = rtnMsg + "담보명 : [ " + tmpAgrmCoverage.getCovNm() + "], 보험료 : [" + tmpAgrmCoverage.getCovPrem()+"원]";
+				rtnMsg = rtnMsg + "\n";
 			}
 			
 		}
@@ -140,7 +141,7 @@ public class AgreementController {
 			, @RequestParam(value="status") String paramStatus
 			){
 		String rtnMsg = "";
-		Agreement tmpAgreement = tmpAgreement = agreementService.modifyAgreement(paramAgrmNo, paramMdFlag, paramCovList, paramEndDt, paramStatus);
+		Agreement tmpAgreement = agreementService.modifyAgreement(paramAgrmNo, paramMdFlag, paramCovList, paramEndDt, paramStatus);
 		if( null == tmpAgreement )
 		{
 			rtnMsg = "Can not modify a contract";
@@ -149,7 +150,7 @@ public class AgreementController {
 		{
 			rtnMsg = "Contract modify is succed";
 			rtnMsg = rtnMsg+"\n";
-			rtnMsg = rtnMsg + "계약번호 : [" + tmpAgreement.getAgrmNo() + "], 총 보험료[" + tmpAgreement.getTotPrem() + "원], 보험시작일 : [" + tmpAgreement.getAgrmStartDt() + "], 보험종료일 : [" + tmpAgreement.getAgrmEndDt() + "";
+			rtnMsg = rtnMsg + "계약번호 : [" + tmpAgreement.getAgrmNo() + "], 총 보험료[" + tmpAgreement.getTotPrem() + "원], 보험시작일 : [" + tmpAgreement.getAgrmStartDt() + "], 보험종료일 : [" + tmpAgreement.getAgrmEndDt() + "]";
 			rtnMsg = rtnMsg + "\n";
 			rtnMsg = rtnMsg +"상품명 : [ "+ tmpAgreement.getAgrmProducts().get(0).getPrdNm()+ "], 계약상태 : [" + tmpAgreement.getAgrmStat()+"], 계약기간 : [" + tmpAgreement.getContTerm() + "]";
 			rtnMsg = rtnMsg + "\n";
@@ -193,7 +194,7 @@ public class AgreementController {
 		{
 			rtnMsg = "Calculating is succed";
 			rtnMsg = rtnMsg+"\n";
-			rtnMsg = rtnMsg + "계약번호 : [" + tmpAgreement.getAgrmNo() + "], 총 보험료[" + tmpAgreement.getTotPrem() + "원], 보험시작일 : [" + tmpAgreement.getAgrmStartDt() + "], 보험종료일 : [" + tmpAgreement.getAgrmEndDt() + "";
+			rtnMsg = rtnMsg + "계약번호 : [" + tmpAgreement.getAgrmNo() + "], 총 보험료[" + tmpAgreement.getTotPrem() + "원], 보험시작일 : [" + tmpAgreement.getAgrmStartDt() + "], 보험종료일 : [" + tmpAgreement.getAgrmEndDt() + "]";
 			rtnMsg = rtnMsg + "\n";
 			rtnMsg = rtnMsg +"상품명 : [ "+ tmpAgreement.getAgrmProducts().get(0).getPrdNm()+ "], 계약상태 : [" + tmpAgreement.getAgrmStat()+"], 계약기간 : [" + tmpAgreement.getContTerm() + "]";
 			rtnMsg = rtnMsg + "\n";
